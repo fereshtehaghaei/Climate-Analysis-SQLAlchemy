@@ -155,7 +155,10 @@ def tobs():
     year_ago_str = year_ago.strftime("%Y-%m-%d")
 
     # Query for the most active station
-    most_active_station = session.query(Measurement.station).group_by(Measurement.station).order_by(func.count(Measurement.station).desc()).first()[0]
+    most_active_station = session.query(    Measurement.station, 
+                                            func.count(Measurement.station)).\
+                                            group_by(Measurement.station).\
+                                            order_by(func.count(Measurement.station).desc()).first()[0]
 
     # Query the dates and temperature observations of the most active station for the last year of data
     results = session.query(Measurement.date, Measurement.tobs).\
