@@ -134,11 +134,11 @@ print (f'Total Number of Stations:  {stations}
 * Design a query to retrieve the last 12 months of temperature observation data (TOBS).
 
   ```
-highest_temp_df = pd.DataFrame(highest_temp, columns=["Date", "TOBS"])
+  highest_temp_df = pd.DataFrame(highest_temp, columns=["Date", "TOBS"])
   highest_temp_df.sort_values('TOBS', inplace=True, ascending=False)
   highest_temp_df.head()
   ```
-  
+
   |      | Date       | TOBS |
   | :--- | :--------- | :--- |
   | 345  | 2017-08-06 | 83.0 |
@@ -146,16 +146,14 @@ highest_temp_df = pd.DataFrame(highest_temp, columns=["Date", "TOBS"])
   | 340  | 2017-07-29 | 82.0 |
   | 334  | 2017-07-23 | 82.0 |
   | 313  | 2017-07-02 | 81.0 |
-  
-  
-  
-  * Plot the results as a histogram with `bins=12`.
-  
-    ![](Images/temperature_vs_frequency.png)
+
+  Plot the results as a histogram with `bins=12`.
+
+  ![](Images/temperature_vs_frequency.png)
 
 
 
-- - -
+
 
 ## Bonus: Analyse
 
