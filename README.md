@@ -1,30 +1,39 @@
-# SQLAlchemy Homework - Surfs Up!
+# SQLAlchemy Challenge - Surfs Up!
 
-### Before You Begin
+![](Images/surfs-up.png)
 
-1. Create a new repository for this project called `sqlalchemy-challenge`. **Do not add this homework to an existing repository**.
+Planning a vacation to Honolulu, Hawaii! By Python and SQLAlchemy, I will be doing basic climate analysis and data exploration from climate database to plan this vacation. 
 
-2. Clone the new repository to your computer.
-
-3. Add your Jupyter notebook and `app.py` to this folder. These will be the main scripts to run for analysis.
-
-4. Push the above changes to GitHub or GitLab.
-
-![surfs-up.png](Images/surfs-up.png)
-
-Congratulations! You've decided to treat yourself to a long holiday vacation in Honolulu, Hawaii! To help with your trip planning, you need to do some climate analysis on the area. The following outlines what you need to do.
+The following outlines are the steps I will be taking to complete this analysis: 
 
 ## Step 1 - Climate Analysis and Exploration
 
 To begin, use Python and SQLAlchemy to do basic climate analysis and data exploration of your climate database. All of the following analysis should be completed using SQLAlchemy ORM queries, Pandas, and Matplotlib.
 
-* Use the provided [starter notebook](climate_starter.ipynb) and [hawaii.sqlite](Resources/hawaii.sqlite) files to complete your climate analysis and data exploration.
+* ###### Creating The Engine to connect to "hawaii.sqlite" database
 
-* Choose a start date and end date for your trip. Make sure that your vacation range is approximately 3-15 days total.
+  ```
+  engine = create_engine("sqlite:///Resources/hawaii.sqlite")
+  ```
 
-* Use SQLAlchemy `create_engine` to connect to your sqlite database.
+  ###### Create automap_base() to reflect your tables into classes
 
-* Use SQLAlchemy `automap_base()` to reflect your tables into classes and save a reference to those classes called `Station` and `Measurement`.
+  - Reflect Tables into SQLAlchemy ORM
+
+  ```
+  # reflect an existing database into a new model
+  Base = automap_base()
+  
+  # reflect the tables
+  Base.prepare(engine, reflect=True)
+  
+  # We can view all of the classes that automap found
+  Base.classes.keys()
+  ```
+
+  ```
+  ['measurement', 'station']
+  ```
 
 ### Precipitation Analysis
 
@@ -32,35 +41,119 @@ To begin, use Python and SQLAlchemy to do basic climate analysis and data explor
 
 * Select only the `date` and `prcp` values.
 
+  ```
+  lastyear_prcp_date = session.query(Measurement.date, Measurement.prcp).\
+                            filter( Measurement.date >= year_ago ).\
+                            order_by(Measurement.date.desc()).all()
+  lastyear_prcp_date[:5]
+  ```
+
 * Load the query results into a Pandas DataFrame and set the index to the date column.
 
 * Sort the DataFrame values by `date`.
 
+  ```
+  df = pd.DataFrame(lastyear_prcp_date, columns=["Date", "Precipitation"])
+  df.set_index('Date', inplace=True) 
+  df.sort_values('Date', inplace=True) 
+  df.head()
+  ```
+
+  |            | Precipitation |
+  | :--------- | :------------ |
+  | Date       |               |
+  | 2016-08-23 | 0.70          |
+  | 2016-08-23 | 0.00          |
+  | 2016-08-23 | 0.15          |
+  | 2016-08-23 | 1.79          |
+  | 2016-08-23 | NaN           |
+
 * Plot the results using the DataFrame `plot` method.
 
-  ![precipitation](Images/precipitation.png)
+  ![](Images/precipitation.png)
+
+  
 
 * Use Pandas to print the summary statistics for the precipitation data.
+
+  ```
+  df.describe()
+  ```
+
+  |       | Precipitation |
+  | :---- | :------------ |
+  | count | 2021.000000   |
+  | mean  | 0.177279      |
+  | std   | 0.461190      |
+  | min   | 0.000000      |
+  | 25%   | 0.000000      |
+  | 50%   | 0.020000      |
+  | 75%   | 0.130000      |
+  | max   | 6.700000      |
 
 ### Station Analysis
 
 * Design a query to calculate the total number of stations.
 
+```
+stations = session.query(Measurement).group_by(Measurement.station).count()
+print (f'Total Number of Stations:  {stations}
+```
+
 * Design a query to find the most active stations.
 
   * List the stations and observation counts in descending order.
 
+    ```
+    most_active= session.query(Measurement.station, 		  
+    					       func.count(Measurement.station)).\
+                               group_by(Measurement.station).\
+                               order_by(func.count(Measurement.station).desc()).all()
+    
+    most_active
+    ```
+
+    [('USC00519281', 2772), ('USC00519397', 2724), ('USC00513117', 2709), ('USC00519523', 2669), ('USC00516128', 2612), ('USC00514830', 2202), ('USC00511918', 1979), ('USC00517948', 1372), ('USC00518838', 511)]
+
+    
+
   * Which station has the highest number of observations?
 
-  * Hint: You will need to use a function such as `func.min`, `func.max`, `func.avg`, and `func.count` in your queries.
+    **Station USC00519281 has the highest number of observation: 2772 weather observations**
+
+  ```
+  most_active_one = session.query(Measurement.station, func.count(Measurement.station)).\
+                    group_by(Measurement.station).\
+                    order_by(func.count(Measurement.station).desc()).first()
+  
+  print (f'Station {most_active_one[0]} has the highest number of observation: {most_active_one[1]} weather obeservations')
+  ```
+
+  
 
 * Design a query to retrieve the last 12 months of temperature observation data (TOBS).
 
-  * Filter by the station with the highest number of observations.
-
+  ```
+highest_temp = session.query(Measurement.date,(Measurement.tobs)).\
+                            filter(Measurement.date >= year_ago ).\
+                          filter(Measurement.station == "USC00519281").group_by(Measurement.date).all()
+  ```
+  
+  
+  
+  |      | Date       | TOBS |
+  | :--- | :--------- | :--- |
+  | 345  | 2017-08-06 | 83.0 |
+  | 344  | 2017-08-05 | 82.0 |
+  | 340  | 2017-07-29 | 82.0 |
+  | 334  | 2017-07-23 | 82.0 |
+  | 313  | 2017-07-02 | 81.0 |
+  
+  
+  
   * Plot the results as a histogram with `bins=12`.
-
-    ![station-histogram](Images/station-histogram.png)
+  
+    ![](Images/temperature_vs_frequency.png)
 
 - - -
 
@@ -109,9 +202,7 @@ Now that you have completed your initial analysis, design a Flask API based on t
 
 - - -
 
-## Bonus: Other Recommended Analyses
-
-* The following are optional challenge queries. These are highly recommended to attempt, but not required for the homework.
+## Bonus: Analyse
 
 ### Temperature Analysis I
 
