@@ -298,19 +298,25 @@ print (f'Total Number of Stations:  {stations}
 
 
 
+------
+
+
+
 ## Step 2 - Climate App
 
+##### 												I Used Flask to create API routes for Hawaii Weather.
+
+##### 															Designed Flask app can be viewed here:
+
+##### 																				[Hawaii Climate App](https://github.com/fereshtehaghaei/SQLAlchemy-Challenge/blob/master/app.py )
 
 
-#### I Used Flask to create API routes for Hawaii Weather.
-
-#### Designed Flask app can be viewed here:  [Hawaii Climate App](https://github.com/fereshtehaghaei/SQLAlchemy-Challenge/blob/master/app.py )
 
 ------
 
-------
 
 
+Below Steps have been done/executed in Hawaii Climate App
 
 ### Routes
 
