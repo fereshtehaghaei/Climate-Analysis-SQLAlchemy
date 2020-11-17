@@ -225,18 +225,12 @@ highest_temp = session.query(Measurement.date,(Measurement.tobs)).\
 * Load the list of daily normals into a Pandas DataFrame and set the index equal to the date.
 
   ```
-  rainfall = (session.query
-                          (Station.station, 
-                           Station.name, 
-                           Station.latitude, 
-                           Station.longitude, 
-                           Station.elevation,
-                           func.avg(Measurement.prcp)).\
+  rainfall = (session.query (Station.station, Station.name,Station.latitude,Station.longitude, 			 
+                             Station.elevation,func.avg(Measurement.prcp)).\
                       filter(Measurement.station == Station.station).\
                       filter(Measurement.date.between(previous_year_start, previous_year_end)).\
                       group_by(Station.station).\
                       order_by(func.avg(Measurement.prcp).desc()).all())
-  
   #rainfall
   
   # Convert query object to data frame
@@ -260,10 +254,7 @@ highest_temp = session.query(Measurement.date,(Measurement.tobs)).\
   for date in trip_dates:  # Loop through the list of %m-%d strings and calculate the normals for each date
       normal = daily_normals(date)
       normals.append(normal)    # push each tuple of calculations into a list called `normals`
-      #normals.append(date)
   # normals
-  
-  # I used this source for help in order to be able to loop through the list of normals --> https://ispycode.com/Python/Flow-Control/Itertools-Module/chain-from_iterable
   
   normals_chain = itertools.chain.from_iterable(normals)
   print(normals)
