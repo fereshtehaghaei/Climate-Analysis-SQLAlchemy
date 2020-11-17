@@ -78,13 +78,13 @@ def welcome():
 <br>   
 <p><b>Temperature Analysis for a given start date (YYYY-MM-DD) :</p></b>
 <ul>
-<li><a href="/api/v1.0/2016-08-01">/api/v1.0</a></li>
+<li><a href="/api/v1.0/2016-08-23">/api/v1.0/startdate</a></li>
 </ul>
 
 <br>
-<p><b>Temperature Analysis for a given start date (YYYY-MM-DD) end date (YYYY-MM-DD) :</p></b>
+<p><b>Temperature Analysis between specified start date (YYYY-MM-DD) and end date (YYYY-MM-DD) :</p></b>
 <ul>
-<li><a href="/api/v1.0/2016-08-01/2016-08-07">/api/v1.0</a></li>
+<li><a href="/api/v1.0/2016-08-01/2016-08-07">/api/v1.0/startdate/enddate</a></li>
 </ul>
 <br>        
 </html>""")
