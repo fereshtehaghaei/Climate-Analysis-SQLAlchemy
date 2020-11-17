@@ -48,7 +48,20 @@ To begin, use Python and SQLAlchemy to do basic climate analysis and data explor
   lastyear_prcp_date[:5]
   ```
 
+  
+
 * Load the query results into a Pandas DataFrame and set the index to the date column.
+
+  |            | Precipitation |
+  | :--------- | :------------ |
+  | Date       |               |
+  | 2016-08-23 | 0.70          |
+  | 2016-08-23 | 0.00          |
+  | 2016-08-23 | 0.15          |
+  | 2016-08-23 | 1.79          |
+  | 2016-08-23 | NaN           |
+
+  
 
 * Sort the DataFrame values by `date`.
 
@@ -131,21 +144,21 @@ print (f'Total Number of Stations:  {stations}
 
   
 
-* Design a query to retrieve the last 12 months of temperature observation data (TOBS).
-
   ```
-  highest_temp_df = pd.DataFrame(highest_temp, columns=["Date", "TOBS"])
-  highest_temp_df.sort_values('TOBS', inplace=True, ascending=False)
-  highest_temp_df.head()
+  highest_temp = session.query(Measurement.date,(Measurement.tobs)).\
+                            filter(Measurement.date >= year_ago ).\
+                            filter(Measurement.station == "USC00519281").group_by(Measurement.date).all()
   ```
 
-  |      | Date       | TOBS |
-  | :--- | :--------- | :--- |
+  | Date | TOBS       |      |
+  | :--- | :--------- | ---- |
   | 345  | 2017-08-06 | 83.0 |
   | 344  | 2017-08-05 | 82.0 |
   | 340  | 2017-07-29 | 82.0 |
   | 334  | 2017-07-23 | 82.0 |
   | 313  | 2017-07-02 | 81.0 |
+
+  
 
   Plot the results as a histogram with `bins=12`.
 
@@ -155,7 +168,7 @@ print (f'Total Number of Stations:  {stations}
 
 
 
-## Bonus: Analyse
+## Bonus: Analyze
 
 ### Temperature Analysis I
 
@@ -285,51 +298,55 @@ print (f'Total Number of Stations:  {stations}
 
 
 
-* ## Step 2 - Climate App
+## Step 2 - Climate App
 
-  Now that you have completed your initial analysis, design a Flask API based on the queries that you have just developed.
 
-  * ##### Used Flask to create API routes. Designed Flask app can be viewed here: 
 
-    [Climate APP]: https://github.com/fereshtehaghaei/SQLAlchemy-Challenge/blob/master/app.py	"Hawaii Climate App"
+#### I Used Flask to create API routes for Hawaii Weather.
 
-    
+#### Designed Flask app can be viewed here:  [Hawaii Climate App](https://github.com/fereshtehaghaei/SQLAlchemy-Challenge/blob/master/app.py )
 
-  ### Routes
+------
 
-  * `/`
-    * Home page.
+------
 
-    * List all routes that are available.
 
-  * `/api/v1.0/precipitation`
 
-    * Convert the query results to a dictionary using `date` as the key and `prcp` as the value.
+### Routes
 
-    * Return the JSON representation of your dictionary.
+* `/`
+  * Home page.
 
-  * `/api/v1.0/stations`
+  * List all routes that are available.
 
-    * Return a JSON list of stations from the dataset.
+* `/api/v1.0/precipitation`
 
-  * `/api/v1.0/tobs`
-    * Query the dates and temperature observations of the most active station for the last year of data.
+  * Convert the query results to a dictionary using `date` as the key and `prcp` as the value.
 
-    * Return a JSON list of temperature observations (TOBS) for the previous year.
+  * Return the JSON representation of your dictionary.
 
-  * `/api/v1.0/<start>` and `/api/v1.0/<start>/<end>`
+* `/api/v1.0/stations`
 
-    * Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
+  * Return a JSON list of stations from the dataset.
 
-    * When given the start only, calculate `TMIN`, `TAVG`, and `TMAX` for all dates greater than and equal to the start date.
+* `/api/v1.0/tobs`
+  * Query the dates and temperature observations of the most active station for the last year of data.
 
-    * When given the start and the end date, calculate the `TMIN`, `TAVG`, and `TMAX` for dates between the start and end date inclusive.
+  * Return a JSON list of temperature observations (TOBS) for the previous year.
 
-  ## Hints
+* `/api/v1.0/<start>` and `/api/v1.0/<start>/<end>`
 
-  * You will need to join the station and measurement tables for some of the queries.
+  * Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
 
-  * Use Flask `jsonify` to convert your API data into a valid JSON response object.
+  * When given the start only, calculate `TMIN`, `TAVG`, and `TMAX` for all dates greater than and equal to the start date.
+
+  * When given the start and the end date, calculate the `TMIN`, `TAVG`, and `TMAX` for dates between the start and end date inclusive.
+
+## Hints
+
+* You will need to join the station and measurement tables for some of the queries.
+
+* Use Flask `jsonify` to convert your API data into a valid JSON response object.
 
 ### Copyright
 
