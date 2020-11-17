@@ -134,12 +134,10 @@ print (f'Total Number of Stations:  {stations}
 * Design a query to retrieve the last 12 months of temperature observation data (TOBS).
 
   ```
-highest_temp = session.query(Measurement.date,(Measurement.tobs)).\
-                            filter(Measurement.date >= year_ago ).\
-                          filter(Measurement.station == "USC00519281").group_by(Measurement.date).all()
+highest_temp_df = pd.DataFrame(highest_temp, columns=["Date", "TOBS"])
+  highest_temp_df.sort_values('TOBS', inplace=True, ascending=False)
+  highest_temp_df.head()
   ```
-  
-  
   
   |      | Date       | TOBS |
   | :--- | :--------- | :--- |
