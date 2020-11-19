@@ -78,13 +78,13 @@ def welcome():
 <br>   
 <p><b>Temperature Analysis for a given start date (YYYY-MM-DD) :</p></b>
 <ul>
-<li><a href="/api/v1.0/2016-08-23">/api/v1.0/startdate</a></li>
+<li><a href="/api/v1.0/date/2016-08-23">/api/v1.0/date/<start></a></li>
 </ul>
 
 <br>
 <p><b>Temperature Analysis between specified start date (YYYY-MM-DD) and end date (YYYY-MM-DD) :</p></b>
 <ul>
-<li><a href="/api/v1.0/2016-08-01/2016-08-07">/api/v1.0/startdate/enddate</a></li>
+<li><a href="/api/v1.0/date/2016-08-01/2016-08-07">/api/v1.0/date/<start>/<end></a></li>
 </ul>
 <br>        
 </html>""")
@@ -179,62 +179,36 @@ def tobs():
 #------------------------------------------------
 
 
-@app.route("/api/v1.0/<start>")
-def start_date(start): 
+@app.route("/api/v1.0/date/<start>")
+@app.route("/api/v1.0/date/<start>/<end>")
+def start_end_date(start=None,end=None): 
 
     # Create Session from pythong to DB
     session = Session(engine) 
-
-    start_date = dt.datetime.strptime(start, '%Y-%m-%d')
-
-    # Query temperature statistics for the start date 
-    results= session.query(    Measurement.date,
-                               func.min(Measurement.tobs), 
-                               func.max(Measurement.tobs), 
-                               func.avg(Measurement.tobs)).\
-                               filter(func.strftime("%Y-%m-%d",Measurement.date) >= start_date).\
-                               group_by(Measurement.date).all()
-
-    temp_data=[]
-    for start_date, tmin, tmax, tavg in results:
-        temp_dict ={}
-        temp_dict['Date']= start_date
-        temp_dict['Minimum Temperature'] = tmin
-        temp_dict['Maximum Temperature']= tmax
-        temp_dict['Avgerage Temperature']= round(tavg,2)
-
-        temp_data.append(temp_dict)
-
-    # Return the JSON representation of your dictionary. 
-    return jsonify(temp_data)                         
-
-
-#------------------------------------------------
-
-
-@app.route("/api/v1.0/<start>/<end>")
-def start_ednd_date(start,end): 
-
-    # Create Session from pythong to DB
-    session = Session(engine) 
-
-    start_date = dt.datetime.strptime(start, '%Y-%m-%d')
-    end_date = dt.datetime.strptime(end, '%Y-%m-%d')
 
     # Query temperature statistics from the start date to the end date
-    results= session.query(    
+    if end:
+        results= session.query(    
                                Measurement.date,
                                func.min(Measurement.tobs), 
                                func.max(Measurement.tobs), 
                                func.avg(Measurement.tobs)).\
-                               filter(func.strftime("%Y-%m-%d",Measurement.date) >= start_date).\
-                               filter(func.strftime("%Y-%m-%d",Measurement.date) <= end_date ).\
+                               filter(Measurement.date >= start).\
+                               filter(Measurement.date <= end).\
                                order_by (Measurement.date).all()
+    else:
+        results= session.query(    
+                               Measurement.date,
+                               func.min(Measurement.tobs), 
+                               func.max(Measurement.tobs), 
+                               func.avg(Measurement.tobs)).\
+                               filter(Measurement.date >= start).\
+                               order_by (Measurement.date).all()    
     temp_data=[]
     for date, tmin, tmax, tavg in results:
         temp_dict={}
-        temp_dict['Start Date']= start_date
-        temp_dict['End Date']= end_date
+        temp_dict['Start Date']= start
+        temp_dict['End Date']= end
         temp_dict['Minimum Temperature'] = tmin
         temp_dict['Maximum Temperature']= tmax
         temp_dict['Avgerage Temperature']= round(tavg,2)
