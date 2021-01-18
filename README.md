@@ -10,12 +10,15 @@ Planning a vacation to Honolulu, Hawaii! By Python and SQLAlchemy, I will be doi
 
 
 
-## Objective: SQLAlchemy-Challenge
+## Objective: 
 
 - Used Python and SQLAlchemy ORM queries with provided hawaii.sqlite to reflect tables into a new model and perform analysis of Hawaii climate.
+
 - Built a Flask Web app using the served queries that will return JSONified query results from API endpoints.
 
-This challenge was done in 2 steps:
+  
+
+  ##### This challenge was done in 2 steps:
 
 - Climate Analysis using SQLAlchemy and Python
 
