@@ -1,4 +1,4 @@
-# [SQLAlchemy - Surfs Up!](https://github.com/fereshtehaghaei/SQLAlchemy-Challenge)
+# [SQLAlchemy - Surfs Up!](https://github.com/fereshtehaghaei/Climate-Analysis-SQLAlchemy/)
 
 ![](Images/surfsup.png)
 
