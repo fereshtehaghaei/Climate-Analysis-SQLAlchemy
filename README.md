@@ -80,6 +80,8 @@ All of the following analysis were completed using SQLAlchemy ORM queries, Panda
 
     ![](Images/trip_average_temperature.png)
 
+
+
 ### Daily Rainfall Average
 
 * Calculated the rainfall per weather station using the previous year's matching dates.
